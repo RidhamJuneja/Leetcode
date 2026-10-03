@@ -1,47 +1,54 @@
 class Solution {
 public:
     vector<int> findMinHeightTrees(int n, vector<vector<int>>& edges) {
-        if(n==1) return {0};
+        unordered_map<int, vector<int>> adj;
         vector<int> indegree(n,0);
         vector<int> result;
-        unordered_map<int,vector<int>> adj;
+        if(n==1)
+        {
+            result.push_back(0);
+            return result;
+        }
         for(auto i : edges)
         {
-            int u = i[0];
-            int v = i[1];
-            indegree[u]++;
-            indegree[v]++;
+            int u = i[0], v = i[1];
             adj[u].push_back(v);
             adj[v].push_back(u);
+            indegree[u]++;
+            indegree[v]++;
         }
-        queue<int> leafNodes;
+        queue<int> q;
         for(int i=0; i<n; i++)
         {
-            if(indegree[i]==1)
-            leafNodes.push(i);
+            if(indegree[i] == 1)
+            q.push(i);
         }
+        int qSize = q.size();
         while(n>2)
         {
-            int size=leafNodes.size();
-            n-=size;
-            for(int i=1; i<=size; i++)
+            qSize=q.size();
+            n -= qSize;
+            while(qSize!=0)
             {
-                int u = leafNodes.front();
-                leafNodes.pop();
-                indegree[u]--;
-                for(auto v : adj[u])
+                int leafNode = q.front();
+                q.pop();
+                indegree[leafNode]--;
+                for(auto v : adj[leafNode])
                 {
                     indegree[v]--;
-
                     if(indegree[v]==1)
-                    leafNodes.push(v);
+                    q.push(v);
                 }
+                qSize--;
             }
         }
-        while(!leafNodes.empty())
+        if(!q.empty())
         {
-            result.push_back(leafNodes.front());
-            leafNodes.pop();
+            while(!q.empty())
+            {
+                result.push_back(q.front());
+                q.pop();
+            }
         }
         return result;
     }
