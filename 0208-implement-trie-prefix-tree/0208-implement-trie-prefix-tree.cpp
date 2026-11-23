@@ -1,17 +1,16 @@
 class TrieNode{
     public:
-    TrieNode* child[26];
     bool endofword;
+    TrieNode* child[26];
     TrieNode()
     {
+        endofword=false;
         for(int i=0; i<26; i++)
         {
             child[i] = nullptr;
         }
-        endofword = false;
     }
 };
-
 class Trie {
     TrieNode* root;
 public:
@@ -23,7 +22,7 @@ public:
         TrieNode* node = root;
         for(char c : word)
         {
-            int index = c - 'a';
+            int index = c-'a';
             if(!node->child[index])
             {
                 node->child[index] = new TrieNode();
@@ -31,33 +30,33 @@ public:
             node = node -> child[index];
         }
         node -> endofword = true;
+        return;
     }
     
     bool search(string word) {
         TrieNode* node = root;
         for(char c : word)
         {
-            int index = c - 'a';
-            if(!node->child[index])
-            {
-                return false;
-            }
-            node = node -> child[index];
+            int index = c-'a';
+            if(!node -> child[index])
+            return false;
+            
+            node = node->child[index];
         }
-        if(node -> endofword == false)
-        return false;
-        else return true;
+        if(node -> endofword == true)
+        return true;
+        else return false;
     }
     
     bool startsWith(string prefix) {
         TrieNode* node = root;
         for(char c : prefix)
         {
-            int index = c - 'a';
+            int index = c-'a';
             if(!node -> child[index])
             return false;
 
-            node = node -> child[index];
+            node = node->child[index];
         }
         return true;
     }
